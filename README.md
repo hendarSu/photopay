@@ -1,61 +1,131 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Photopay
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Photopay adalah platform jual-beli foto lokal yang memudahkan seller dan buyer untuk saling berbagi, menjual, dan membeli koleksi foto dengan cepat dan aman.
 
-## About Laravel
+## Ringkasan
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Photopay dirancang untuk: penjual (seller) mengunggah foto dan menetapkan harga; pembeli (buyer) mencari foto, melakukan pembayaran cepat melalui fitur "Jajan Photo", lalu mengunduh hasil pembelian secara langsung. Sistem mendukung pembelian paket multi-angle (select all angle) dalam satu transaksi.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Fitur Utama
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Marketplace foto lokal: seller dapat meng-upload foto, menambahkan metadata (judul, deskripsi, tag, kategori, angle), dan menetapkan harga per item atau paket.
+- Mekanisme "Jajan Photo": metode pembayaran mikro/sekali klik yang memudahkan pembelian foto tunggal atau paket tanpa proses checkout panjang.
+- Select all angle: buyer dapat memilih seluruh variasi angle (mis. front, side, detail) dari sebuah sesi foto dan membayar sekaligus.
+- Pencarian dan filter cepat: pencarian berdasarkan kata kunci, kategori, tag, lokasi, dan harga.
+- Unduhan instan: setelah pembayaran terkonfirmasi, buyer dapat langsung mendownload file foto beresolusi penuh.
+- Dashboard untuk seller & buyer: riwayat transaksi, manajemen foto, laporan penjualan, dan pengaturan pembayaran.
+- Harga ditetapkan oleh seller: seller bebas menentukan harga per foto atau paket angle.
+- Sistem pembayaran mudah: integrasi gateway pembayaran (placeholder) atau saldo internal (wallet) untuk transaksi cepat.
 
-## Learning Laravel
+## Kontrak singkat (inputs/outputs)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Input: data user (seller/buyer), file foto (+ metadata), pengaturan harga, permintaan pencarian, perintah pembelian.
+- Output: halaman daftar foto, detail produk, proses pembayaran, status transaksi, link unduhan untuk file yang dibeli.
+- Error modes: stok/file tidak ditemukan, pembayaran gagal, limit bandwidth/akses, hak cipta/dispute.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Kasus Edge (penting)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- Foto duplikat atau konflik metadata.
+- Pembayaran gagal atau timeout saat proses "Jajan Photo".
+- Buyer mencoba mengunduh tanpa hak akses.
+- Seller menarik foto setelah ada pesanan yang belum diproses.
+- Batas ukuran file unggahan terlalu besar.
 
-## Laravel Sponsors
+## Instalasi / Setup Project
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Asumsi: macOS dengan Zsh (sesuai lingkungan kerja). Proyek ini adalah aplikasi Laravel; langkah berikut menuntun Anda menyiapkan environment dasar.
 
-### Premium Partners
+Prasyarat
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- PHP 8.1+ (atau versi yang sesuai dengan composer.json)
+- Composer
+- Node.js 16+ dan npm / Yarn
+- SQLite (default) atau MySQL/Postgres
+- Git
 
-## Contributing
+Langkah cepat
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+1. Salin file environment dan atur variabel
 
-## Code of Conduct
+```bash
+cp .env.example .env
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+2. Install dependensi PHP
 
-## Security Vulnerabilities
+```bash
+composer install --prefer-dist --no-interaction
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+3. Generate application key
 
-## License
+```bash
+php artisan key:generate
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+4. Siapkan database (contoh: SQLite cepat untuk development)
+
+```bash
+touch database/database.sqlite
+# lalu set DB_CONNECTION=sqlite di .env
+```
+
+Jika menggunakan MySQL/Postgres, ubah konfigurasi di `.env` sesuai kredensial Anda.
+
+5. Jalankan migrasi dan seeder
+
+```bash
+php artisan migrate --seed
+```
+
+6. Install dependensi JavaScript dan build aset
+
+```bash
+npm install
+npm run build    # atau `npm run dev` untuk mode development
+```
+
+7. Buat symbolic link ke storage (untuk akses file publik)
+
+```bash
+php artisan storage:link
+```
+
+8. Jalankan server lokal
+
+```bash
+php artisan serve
+```
+
+9. Menjalankan test cepat
+
+```bash
+php artisan test
+```
+
+Catatan: Jika Anda menggunakan gateway pembayaran pihak ketiga, konfigurasikan kredensialnya di `.env` dan ikuti dokumentasi gateway untuk sandbox/live.
+
+## Cara pakai singkat
+
+1. Daftar sebagai user. Pilih peran: buyer atau seller.
+2. Seller: unggah foto, tambahkan metadata, tentukan harga atau paket angle.
+3. Buyer: cari foto, gunakan filter, pilih foto/angle yang diinginkan.
+4. Buyer gunakan fitur "Jajan Photo" untuk checkout cepat (atau gunakan wallet/gateway).
+5. Setelah pembayaran berhasil, buyer dapat mengunduh foto dari halaman transaksi.
+
+## Hal lain / Pengembangan lebih lanjut
+
+- Integrasi gateway pembayaran (Stripe, Midtrans, Xendit, dsb.).
+- Sistem review & rating untuk seller.
+- Proteksi DRM dan watermark opsional untuk preview publik.
+- Paket lisensi (komersial, editorial, personal).
+- Penjadwalan promosi, diskon, dan bundling otomatis.
+
+## Kontribusi
+
+Silakan buka issue atau pull request. Ikuti standar coding dan jalankan test sebelum mengirim PR.
+
+## Lisensi
+
+Lisensi proyek ini mengikuti file `composer.json` dan/atau LICENSE jika tersedia.
+
